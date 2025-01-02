@@ -1,0 +1,1 @@
+project name + module -> framework -> db -> install other package -> done
