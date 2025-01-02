@@ -1,0 +1,35 @@
+package controller
+
+import (
+	"net/http"
+
+	"{{ .ModuleName }}/dto"
+	"{{ .ModuleName }}/service"
+	"github.com/gin-gonic/gin"
+)
+
+type ExampleController interface {
+	Create(c *gin.Context)
+	GetAll(c *gin.Context)
+	GetByID(c *gin.Context)
+	Update(c *gin.Context)
+	Delete(c *gin.Context)
+}
+
+type exampleController struct {
+	exampleController service.ExampleService
+}
+
+func NewExampleController(es service.ExampleService) ExampleController {
+	return &exampleController{es}
+}
+
+func (ec *exampleController) Create(c *gin.Context) {}
+
+func (ec *exampleController) GetAll(c *gin.Context) {}
+
+func (ec *exampleController) GetByID(c *gin.Context) {}
+
+func (ec *exampleController) Update(c *gin.Context) {}
+
+func (ec *exampleController) Delete(c *gin.Context) {}

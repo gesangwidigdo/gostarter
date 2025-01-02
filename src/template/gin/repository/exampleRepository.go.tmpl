@@ -1,0 +1,32 @@
+package repository
+
+import (
+	"gorm.io/gorm"
+	"{{ .ModuleName }}/model"
+)
+
+type ExampleRepository interface {
+	Create(example model.Example) (model.Example, error)
+	GetAll() ([]model.Example, error)
+	GetByID(id int) (model.Example, error)
+	Update(id int, example model.Example) (model.Example, error)
+	Delete(id int) error
+}
+
+type exampleRepository struct {
+	db *gorm.DB
+}
+
+func NewExampleRepository(db *gorm.DB) ExampleRepository {
+	return &exampleRepository{db}
+}
+
+func (er *exampleRepository) Create(example model.Example) (model.Example, error) {}
+
+func (er *exampleRepository) GetAll() ([]model.Example, error) {}
+
+func (er *exampleRepository) GetByID(id int) (model.Example, error) {}
+
+func (er *exampleRepository) Update(id int, example model.Example) (model.Example, error) {}
+
+func (er *exampleRepository) Delete(id int) error {}

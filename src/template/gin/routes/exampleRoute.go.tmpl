@@ -1,0 +1,14 @@
+package routes
+
+import (
+	"github.com/gin-gonic/gin"
+	"{{ .ModuleName }}/controllers"
+)
+
+func ExampleRoute(r *gin.RouterGroup) {
+	r.POST("/", controllers.CreateExample)
+	r.GET("/", controllers.GetAllExample)
+	r.GET("/:id", controllers.GetExampleByID)
+	r.PUT("/:id", controllers.UpdateExample)
+	r.DELETE("/:id", controllers.DeleteExample)
+}

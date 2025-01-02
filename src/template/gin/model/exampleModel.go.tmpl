@@ -1,0 +1,9 @@
+package model
+
+import "gorm.io/gorm"
+
+type Example struct {
+	gorm.Model
+
+	Example string `gorm:"not null; type:varchar(255)"`
+}

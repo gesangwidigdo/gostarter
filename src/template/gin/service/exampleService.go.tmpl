@@ -1,0 +1,37 @@
+package service
+
+import (
+	"fmt"
+
+	"{{ .ModuleName }}/dto"
+	"{{ .ModuleName }}/model"
+	"{{ .ModuleName }}/repository"
+)
+
+type ExampleService interface {
+	Create(req dto.Request) (dto.Response, error)
+	GetAll() ([]dto.ListResponse, error)
+	GetByID(id int) (dto.ByIDResponse, error)
+	Update(id int, req dto.Request) (dto.UpdateResponse, error)
+	Delete(id int) error
+}
+
+type exampleservice struct {
+	exampleRepo repository.ExampleRepository
+}
+
+func NewExampleService(er repository.ExampleRepository) ExampleService {
+	return &exampleservice{
+		exampleRepo: er,
+	}
+}
+
+func (es *exampleservice) Create(req dto.Request) (dto.Response, error) {}
+
+func (es *exampleservice) GetAll() ([]dto.ListResponse, error) {}
+
+func (es *exampleservice) GetByID(id int) (dto.ByIDResponse, error) {}
+
+func (es *exampleservice) Update(id int, req dto.Request) (dto.UpdateResponse, error) {}
+
+func (es *exampleservice) Delete(id int) error {}
