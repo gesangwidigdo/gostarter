@@ -9,6 +9,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+var selectedDBMS string
+
 type dbItem string
 
 func (d dbItem) FilterValue() string { return "" }
@@ -59,6 +61,7 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(dbItem)
 			if ok {
 				m.choice = string(i)
+				selectedDBMS = m.choice
 				m.done = true
 			}
 		}
