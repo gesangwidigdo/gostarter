@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var selectedDBMS string
+var SelectedDBMS string
 
 type dbItem string
 
@@ -61,7 +61,7 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(dbItem)
 			if ok {
 				m.choice = string(i)
-				selectedDBMS = m.choice
+				SelectedDBMS = m.choice
 				m.done = true
 			}
 		}
@@ -74,7 +74,7 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m dbModel) View() string {
 	if m.choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nURL: %s\nFramework: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, InsertedModuleURL, selectedFramework, m.choice))
+		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nURL: %s\nFramework: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, InsertedModuleURL, SelectedFramework, SelectedDBMS))
 	}
 	if m.quitting {
 		return quitTextStyle.Render("Quitting...")

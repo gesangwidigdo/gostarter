@@ -7,10 +7,6 @@ import (
 )
 
 func ProjectInitialization(projectName, moduleURL string) error {
-	if err := os.Mkdir(projectName, 0755); err != nil {
-		return fmt.Errorf("error creating project folder: %v", err)
-	}
-
 	if err := os.Chdir(projectName); err != nil {
 		return fmt.Errorf("error changing directory: %v", err)
 	}

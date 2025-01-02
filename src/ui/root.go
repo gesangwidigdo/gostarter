@@ -3,6 +3,7 @@ package ui
 import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/gesangwidigdo/gostarter/src/program"
+	"github.com/gesangwidigdo/gostarter/src/templates"
 )
 
 type Page int
@@ -102,7 +103,9 @@ func RunApp() {
 		panic(err)
 	}
 
+	templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
+
 	// After the user has selected all the options, we can now initialize the project
 	program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
-	program.InstallDependencies(selectedFramework, selectedDBMS)
+	program.InstallDependencies(SelectedFramework, SelectedDBMS)
 }

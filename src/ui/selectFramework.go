@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var selectedFramework string
+var SelectedFramework string
 
 type item string
 
@@ -65,7 +65,7 @@ func (m frameworkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(item)
 			if ok {
 				m.choice = string(i)
-				selectedFramework = m.choice
+				SelectedFramework = m.choice
 				m.done = true
 			}
 		}
