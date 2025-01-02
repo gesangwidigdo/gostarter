@@ -7,7 +7,6 @@ import (
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 var (
@@ -16,7 +15,6 @@ var (
 )
 
 var (
-	blurredStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
 	focusedButton = focusedStyle.Render("[ Submit ]")
 	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
 )
