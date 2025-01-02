@@ -10,6 +10,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+var selectedFramework string
+
 var (
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
@@ -23,12 +25,12 @@ type item string
 
 func (i item) FilterValue() string { return "" }
 
-type itemDelegate struct{}
+type frameworkItemDelegate struct{}
 
-func (d itemDelegate) Height() int                             { return 1 }
-func (d itemDelegate) Spacing() int                            { return 0 }
-func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
+func (d frameworkItemDelegate) Height() int                             { return 1 }
+func (d frameworkItemDelegate) Spacing() int                            { return 0 }
+func (d frameworkItemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d frameworkItemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
 	i, ok := listItem.(item)
 	if !ok {
 		return
@@ -73,9 +75,9 @@ func (m frameworkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.list.SelectedItem().(item)
 			if ok {
 				m.choice = string(i)
+				selectedFramework = m.choice
 				m.done = true
 			}
-			return m, tea.Quit
 		}
 	}
 
@@ -85,9 +87,6 @@ func (m frameworkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m frameworkModel) View() string {
-	if m.choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, m.choice))
-	}
 	if m.quitting {
 		return quitTextStyle.Render("Quitting...")
 	}
@@ -98,22 +97,12 @@ func initialSelectFramework() frameworkModel {
 	items := []list.Item{
 		item("Gin"),
 		item("Echo"),
-		item("Fiber"),
-		item("Buffalo"),
-		item("Revel"),
 		item("Iris"),
-		item("Beego"),
-		item("Gorilla Mux"),
-		item("Chi"),
-		item("Goji"),
-		item("Martini"),
-		item("Negroni"),
-		item("Tiger Tonic"),
 	}
 
 	const defaultWidth = 50
 
-	l := list.New(items, itemDelegate{}, defaultWidth, 10)
+	l := list.New(items, frameworkItemDelegate{}, defaultWidth, 10)
 	l.Title = titleStyle.Render("Select a framework")
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)

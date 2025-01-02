@@ -1,1 +1,7 @@
-project name + module -> framework -> db -> install other package -> done
+project name + module -> framework -> db -> done
+
+required to install:
+- gorm
+- godotenv
+- cors
+- jwt

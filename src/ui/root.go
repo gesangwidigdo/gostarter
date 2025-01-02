@@ -9,12 +9,14 @@ type Page int
 const (
 	PageProjectName Page = iota
 	PageSelectFramework
+	PageSelectDB
 )
 
 type appModel struct {
 	CurrentPage Page
 	ProjectName projectNameModel
 	Framework   frameworkModel
+	DB          dbModel
 	Quitting    bool
 }
 
@@ -23,6 +25,7 @@ func initialAppModel() appModel {
 		CurrentPage: PageProjectName,
 		ProjectName: initialProjectName(),
 		Framework:   initialSelectFramework(),
+		DB:          initialSelectDB(),
 		Quitting:    false,
 	}
 }
@@ -31,8 +34,13 @@ func (m appModel) Init() tea.Cmd {
 	switch m.CurrentPage {
 	case PageProjectName:
 		return m.ProjectName.Init()
+
 	case PageSelectFramework:
 		return m.Framework.Init()
+
+	case PageSelectDB:
+		return m.DB.Init()
+
 	default:
 		return nil
 	}
@@ -52,6 +60,14 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		newModel, cmd := m.Framework.Update(msg)
 		m.Framework = newModel.(frameworkModel)
 		if m.Framework.done {
+			m.CurrentPage = PageSelectDB
+		}
+		return m, cmd
+
+	case PageSelectDB:
+		newModel, cmd := m.DB.Update(msg)
+		m.DB = newModel.(dbModel)
+		if m.DB.done {
 			m.Quitting = true
 			return m, tea.Quit
 		}
@@ -68,6 +84,9 @@ func (m appModel) View() string {
 
 	case PageSelectFramework:
 		return m.Framework.View()
+
+	case PageSelectDB:
+		return m.DB.View()
 	}
 
 	if m.Quitting {
