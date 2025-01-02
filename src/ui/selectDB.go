@@ -71,7 +71,7 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m dbModel) View() string {
 	if m.choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nFramework: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, selectedFramework, m.choice))
+		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nURL: %s\nFramework: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, InsertedModuleURL, selectedFramework, m.choice))
 	}
 	if m.quitting {
 		return quitTextStyle.Render("Quitting...")
