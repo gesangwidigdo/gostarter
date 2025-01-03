@@ -2,6 +2,7 @@ package templates
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,45 +29,82 @@ func GenerateTemplate(projectName, moduleName, framework string) {
 		srcDir = "templates/other"
 	}
 
-	dstDir := data.ProjectName
-
-	err := os.MkdirAll(dstDir, os.ModePerm)
+	cwd, err := os.Getwd()
 	if err != nil {
-		fmt.Errorf("Error creating project directory: %v", err)
+		log.Fatalf("Failed to get current working directory: %v", err)
+	}
+	fmt.Printf("Current working directory: %s\n", cwd)
+
+	// Buat folder berdasarkan nama ProjectName
+	projectDir := filepath.Join(cwd, projectName)
+	if err := os.MkdirAll(projectDir, os.ModePerm); err != nil {
+		log.Fatalf("Failed to create project directory: %v", err)
 	}
 
-	err = filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
+	fmt.Println("Project directory created: ", projectDir)
+
+	// Join the srcDir with the current working directory
+	absSrcDir, err := filepath.Abs(filepath.Join("./src", srcDir))
+	if err != nil {
+		log.Fatalf("Failed to get absolute path for %s: %v", srcDir, err)
+	}
+	fmt.Println("Absolute source directory: ", absSrcDir)
+
+	// Check if the srcDir exists
+	if _, err := os.Stat(absSrcDir); os.IsNotExist(err) {
+		fmt.Printf("Directory does not exist: %s\n", absSrcDir)
+	}
+
+	files := template.New("")
+	err = filepath.Walk(absSrcDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if info.IsDir() {
-			relativePath := strings.TrimPrefix(path, srcDir)
-			dstPath := filepath.Join(dstDir, relativePath)
-			return os.MkdirAll(dstPath, os.ModePerm)
+		if !info.IsDir() && strings.HasSuffix(info.Name(), ".tmpl") {
+			relPath, err := filepath.Rel(absSrcDir, path)
+			if err != nil {
+				return err
+			}
+
+			content, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+
+			tmpl := files.New(relPath)
+			if _, err := tmpl.Parse(string(content)); err != nil {
+				return err
+			}
 		}
-
-		relativePath := strings.TrimPrefix(path, srcDir)
-		dstPath := filepath.Join(dstDir, strings.TrimSuffix(relativePath, ".tmpl"))
-
-		tmpl, err := template.ParseFiles(path)
-		if err != nil {
-			return err
-		}
-
-		outputFile, err := os.Create(dstPath)
-		if err != nil {
-			return err
-		}
-
-		defer outputFile.Close()
-
-		return tmpl.Execute(outputFile, data)
+		return nil
 	})
 
 	if err != nil {
-		fmt.Errorf("error generating project: %v", err)
+		log.Fatalf("Failed to walk through templates files: %v", err)
 	}
 
-	fmt.Println("Project created successfully at ", dstDir)
+	fmt.Println("Absolute source directory: ", absSrcDir)
+
+	for _, tmpl := range files.Templates() {
+		targetPath := filepath.Join(projectDir, tmpl.Name())
+
+		// Create the target directory if it doesn't exist
+		targetDir := filepath.Dir(targetPath)
+		if err := os.MkdirAll(targetDir, os.ModePerm); err != nil {
+			log.Fatalf("Failed to create target directory: %v", err)
+		}
+
+		targetFile, err := os.Create(targetPath)
+		if err != nil {
+			log.Fatalf("Failed to create target file: %v", err)
+		}
+		defer targetFile.Close()
+
+		if err := tmpl.Execute(targetFile, data); err != nil {
+			log.Fatalf("Failed to execute template: %v", err)
+		}
+
+		fmt.Printf("Generated file: %s\n", targetPath)
+	}
 }
