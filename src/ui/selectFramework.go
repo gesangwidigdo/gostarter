@@ -57,7 +57,7 @@ func (m frameworkModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
-		case "q", "ctrl+c", "esc":
+		case "ctrl+c", "esc", "q":
 			m.quitting = true
 			return m, tea.Quit
 
@@ -90,10 +90,10 @@ func initialSelectFramework() frameworkModel {
 		item("Iris"),
 	}
 
-	const defaultWidth = 50
+	const defaultWidth = 80
 
 	l := list.New(items, frameworkItemDelegate{}, defaultWidth, 10)
-	l.Title = titleStyle.Render("Select a framework")
+	l.Title = titleStyle.Render("Select a framework (template only available for gin)")
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)
 	l.Styles.Title = titleStyle

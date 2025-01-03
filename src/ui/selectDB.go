@@ -53,7 +53,7 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "q":
+		case "ctrl+c", "esc", "q":
 			m.quitting = true
 			return m, tea.Quit
 
@@ -73,9 +73,6 @@ func (m dbModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m dbModel) View() string {
-	if m.choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Project name: %s\nURL: %s\nFramework: %s\nYou chose: %s\n\nPress q to quit", InsertedProjectName, InsertedModuleURL, SelectedFramework, SelectedDBMS))
-	}
 	if m.quitting {
 		return quitTextStyle.Render("Quitting...")
 	}

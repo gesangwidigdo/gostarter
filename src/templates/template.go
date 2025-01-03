@@ -33,7 +33,6 @@ func GenerateTemplate(projectName, moduleName, framework string) {
 	if err != nil {
 		log.Fatalf("Failed to get current working directory: %v", err)
 	}
-	fmt.Printf("Current working directory: %s\n", cwd)
 
 	// Buat folder berdasarkan nama ProjectName
 	projectDir := filepath.Join(cwd, projectName)
@@ -41,14 +40,11 @@ func GenerateTemplate(projectName, moduleName, framework string) {
 		log.Fatalf("Failed to create project directory: %v", err)
 	}
 
-	fmt.Println("Project directory created: ", projectDir)
-
 	// Join the srcDir with the current working directory
 	absSrcDir, err := filepath.Abs(filepath.Join("./src", srcDir))
 	if err != nil {
 		log.Fatalf("Failed to get absolute path for %s: %v", srcDir, err)
 	}
-	fmt.Println("Absolute source directory: ", absSrcDir)
 
 	// Check if the srcDir exists
 	if _, err := os.Stat(absSrcDir); os.IsNotExist(err) {
@@ -83,8 +79,6 @@ func GenerateTemplate(projectName, moduleName, framework string) {
 	if err != nil {
 		log.Fatalf("Failed to walk through templates files: %v", err)
 	}
-
-	fmt.Println("Absolute source directory: ", absSrcDir)
 
 	for _, tmpl := range files.Templates() {
 		targetPath := filepath.Join(projectDir, tmpl.Name())

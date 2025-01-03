@@ -2,8 +2,6 @@ package ui
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gesangwidigdo/gostarter/src/program"
-	"github.com/gesangwidigdo/gostarter/src/templates"
 )
 
 type Page int
@@ -12,6 +10,7 @@ const (
 	PageProjectName Page = iota
 	PageSelectFramework
 	PageSelectDB
+	PageExit
 )
 
 type appModel struct {
@@ -19,6 +18,7 @@ type appModel struct {
 	ProjectName projectNameModel
 	Framework   frameworkModel
 	DB          dbModel
+	Exit        exitModel
 	Quitting    bool
 }
 
@@ -28,6 +28,7 @@ func initialAppModel() appModel {
 		ProjectName: initialProjectName(),
 		Framework:   initialSelectFramework(),
 		DB:          initialSelectDB(),
+		Exit:        initialExit(),
 		Quitting:    false,
 	}
 }
@@ -53,6 +54,11 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case PageProjectName:
 		newModel, cmd := m.ProjectName.Update(msg)
 		m.ProjectName = newModel.(projectNameModel)
+
+		if m.ProjectName.quitting {
+			m.CurrentPage = PageExit
+		}
+
 		if m.ProjectName.done {
 			m.CurrentPage = PageSelectFramework
 		}
@@ -61,6 +67,11 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case PageSelectFramework:
 		newModel, cmd := m.Framework.Update(msg)
 		m.Framework = newModel.(frameworkModel)
+
+		if m.Framework.quitting {
+			m.CurrentPage = PageExit
+		}
+
 		if m.Framework.done {
 			m.CurrentPage = PageSelectDB
 		}
@@ -69,6 +80,11 @@ func (m appModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case PageSelectDB:
 		newModel, cmd := m.DB.Update(msg)
 		m.DB = newModel.(dbModel)
+
+		if m.DB.quitting {
+			m.CurrentPage = PageExit
+		}
+
 		if m.DB.done {
 			m.Quitting = true
 			return m, tea.Quit
@@ -99,13 +115,18 @@ func (m appModel) View() string {
 
 func RunApp() {
 	p := tea.NewProgram(initialAppModel())
-	if _, err := p.Run(); err != nil {
+	_, err := p.Run()
+	if err != nil {
 		panic(err)
 	}
 
-	templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
+	// fmt.Println(model.(appModel))
 
-	// After the user has selected all the options, we can now initialize the project
-	program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
-	program.InstallDependencies(SelectedFramework, SelectedDBMS)
+	// if !model.(appModel).Quitting {
+	// 	templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
+
+	// 	// After the user has selected all the options, we can now initialize the project
+	// 	program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
+	// 	program.InstallDependencies(SelectedFramework, SelectedDBMS)
+	// }
 }

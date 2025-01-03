@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -22,6 +21,7 @@ var (
 type projectNameModel struct {
 	focusIndex int
 	inputs     []textinput.Model
+	quitting   bool
 	done       bool
 }
 
@@ -38,14 +38,12 @@ func initialProjectName() projectNameModel {
 
 		switch i {
 		case 0:
-			fmt.Println("Project Name: ")
 			t.Placeholder = "Project Name"
 			t.Focus()
 			t.PromptStyle = focusedStyle
 			t.TextStyle = focusedStyle
 
 		case 1:
-			fmt.Println("Module URL: ")
 			t.Placeholder = "example.com/username/project"
 			t.CharLimit = 100
 		}
@@ -64,7 +62,8 @@ func (pn projectNameModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "ctrl+c", "esc":
+		case "ctrl+c", "esc", "q":
+			pn.quitting = true
 			return pn, tea.Quit
 
 		case "tab", "shift+tab", "enter", "up", "down":
@@ -141,12 +140,4 @@ func (pn projectNameModel) View() string {
 	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
 
 	return b.String()
-}
-
-func ProjectName() {
-	p := tea.NewProgram(initialProjectName())
-	_, err := p.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
 }
