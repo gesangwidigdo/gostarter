@@ -12,7 +12,7 @@ import (
 type exitModel int
 
 func initialExit() exitModel {
-	return 5
+	return 1
 }
 
 func (m exitModel) Init() tea.Cmd {

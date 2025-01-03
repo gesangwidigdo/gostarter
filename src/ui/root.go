@@ -2,6 +2,8 @@ package ui
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/gesangwidigdo/gostarter/src/program"
+	"github.com/gesangwidigdo/gostarter/src/templates"
 )
 
 type Page int
@@ -115,18 +117,21 @@ func (m appModel) View() string {
 
 func RunApp() {
 	p := tea.NewProgram(initialAppModel())
-	_, err := p.Run()
+	model, err := p.Run()
 	if err != nil {
 		panic(err)
 	}
 
-	// fmt.Println(model.(appModel))
+	if model, ok := model.(appModel); ok && model.CurrentPage == PageExit {
+		return
+	}
 
-	// if !model.(appModel).Quitting {
-	// 	templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
+	// Cek apakah program selesai tanpa membatalkan
+	if model, ok := model.(appModel); ok && !model.Quitting {
+		templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
 
-	// 	// After the user has selected all the options, we can now initialize the project
-	// 	program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
-	// 	program.InstallDependencies(SelectedFramework, SelectedDBMS)
-	// }
+		// Inisialisasi proyek setelah semua pilihan selesai
+		program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
+		program.InstallDependencies(SelectedFramework, SelectedDBMS)
+	}
 }
