@@ -126,12 +126,10 @@ func RunApp() {
 		return
 	}
 
-	// Cek apakah program selesai tanpa membatalkan
-	if model, ok := model.(appModel); ok && !model.Quitting {
-		templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
+	templates.GenerateTemplate(InsertedProjectName, InsertedModuleURL, SelectedFramework)
 
-		// Inisialisasi proyek setelah semua pilihan selesai
-		program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
-		program.InstallDependencies(SelectedFramework, SelectedDBMS)
-	}
+	// Inisialisasi proyek setelah semua pilihan selesai
+	program.ProjectInitialization(InsertedProjectName, InsertedModuleURL)
+	program.InstallDependencies(SelectedFramework, SelectedDBMS)
+
 }
